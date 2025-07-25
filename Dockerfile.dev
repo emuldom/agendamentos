@@ -1,0 +1,106 @@
+# === DOCKERFILE PARA DESENVOLVIMENTO ===
+# Sistema de Agendamentos - Ambiente DEV
+
+# === STAGE 1: Base para Desenvolvimento ===
+FROM php:8.3-fpm-alpine AS base-dev
+
+# Instalar dependências do sistema + ferramentas de desenvolvimento
+RUN apk add --no-cache \
+    git \
+    curl \
+    libpng-dev \
+    libxml2-dev \
+    zip \
+    unzip \
+    postgresql-dev \
+    oniguruma-dev \
+    libzip-dev \
+    freetype-dev \
+    libjpeg-turbo-dev \
+    libwebp-dev \
+    icu-dev \
+    nodejs \
+    npm \
+    supervisor \
+    # Ferramentas de desenvolvimento
+    bash \
+    vim \
+    htop \
+    sqlite \
+    # Dependências para Xdebug
+    autoconf \
+    dpkg-dev dpkg \
+    file \
+    g++ \
+    gcc \
+    libc-dev \
+    make \
+    pkgconf \
+    re2c
+
+# Instalar extensões PHP + Xdebug para desenvolvimento
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-install \
+    pdo \
+    pdo_pgsql \
+    pdo_sqlite \
+    mbstring \
+    exif \
+    pcntl \
+    bcmath \
+    gd \
+    zip \
+    intl
+
+# Instalar Redis e Xdebug
+RUN pecl install redis xdebug \
+    && docker-php-ext-enable redis xdebug
+
+# Configurações PHP para desenvolvimento
+COPY docker/php/php.dev.ini /usr/local/etc/php/php.ini
+COPY docker/php/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+COPY docker/php/php-fpm.dev.conf /usr/local/etc/php-fpm.d/www.conf
+
+# Instalar Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# === STAGE 2: Desenvolvimento ===
+FROM base-dev AS development
+
+WORKDIR /var/www/html
+
+# Criar usuário de desenvolvimento
+RUN addgroup -g 1000 -S www-data-dev \
+    && adduser -u 1000 -D -S -G www-data-dev www-data-dev
+
+# Copiar configuração do Supervisor para desenvolvimento
+COPY docker/supervisor/supervisord.dev.conf /etc/supervisor/conf.d/supervisord.dev.conf
+
+# Criar diretórios necessários
+RUN mkdir -p /var/www/html/storage/logs \
+    && mkdir -p /var/www/html/storage/framework/cache/data \
+    && mkdir -p /var/www/html/storage/framework/sessions \
+    && mkdir -p /var/www/html/storage/framework/views \
+    && mkdir -p /var/www/html/storage/app/public \
+    && mkdir -p /var/www/html/bootstrap/cache \
+    && mkdir -p /var/www/html/database \
+    && mkdir -p /var/log/supervisor
+
+# Criar arquivo SQLite
+RUN touch /var/www/html/database/database.sqlite
+
+# Configurar permissões para desenvolvimento
+RUN chown -R www-data-dev:www-data-dev /var/www/html \
+    && chmod -R 755 /var/www/html \
+    && chmod -R 775 /var/www/html/storage \
+    && chmod -R 775 /var/www/html/bootstrap/cache \
+    && chmod 664 /var/www/html/database/database.sqlite
+
+# Expor portas para desenvolvimento
+EXPOSE 9000 5173
+
+# Usuário para desenvolvimento
+USER www-data-dev
+
+# Comando padrão para desenvolvimento
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.dev.conf"]

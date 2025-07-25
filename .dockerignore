@@ -1,0 +1,40 @@
+# Ignorar arquivos de desenvolvimento
+node_modules
+.git
+.env
+.env.*
+!.env.example
+
+# Ignorar a pasta vendor do contexto local.
+# Ela será gerada dentro do Dockerfile no estágio 'builder'.
+vendor/  # <--- Mude para 'vendor/' para IGNORAR a pasta local
+
+# Ignorar arquivos de cache e logs
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+!storage/logs/.gitkeep
+!storage/framework/cache/.gitkeep
+!storage/framework/sessions/.gitkeep
+!storage/framework/views/.gitkeep
+
+# Ignorar arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar arquivos de IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Ignorar arquivos de teste
+tests/
+phpunit.xml
+.phpunit.result.cache
+
+# Ignorar documentação
+README.md
+.editorconfig
+.gitignore

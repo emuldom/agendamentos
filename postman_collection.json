@@ -1,0 +1,663 @@
+{
+  "info": {
+    "name": "API Agendamentos",
+    "description": "Coleção completa da API de Agendamentos com autenticação",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://tavares.tec.br/api",
+      "type": "string"
+    },
+    {
+      "key": "email",
+      "value": "n8n@tavares.tec.br",
+      "type": "string"
+    },
+    {
+      "key": "password",
+      "value": "dfefae75f9de7cb2b67d5970df400a3d8b95ff17ca9565e7807bdee7eff5",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('token', response.token);",
+                  "    pm.test('Token salvo com sucesso', function () {",
+                  "        pm.expect(response.token).to.not.be.undefined;",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email_login\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": ["{{base_url}}"],
+              "path": ["login"]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/logout",
+              "host": ["{{base_url}}"],
+              "path": ["logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Empresas",
+      "item": [
+        {
+          "name": "Listar Empresas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/empresas",
+              "host": ["{{base_url}}"],
+              "path": ["empresas"]
+            }
+          }
+        },
+        {
+          "name": "Criar Empresa",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome_empresa\": \"Nova Empresa\",\n  \"cnpj\": \"12.345.678/0001-90\",\n  \"telefone\": \"(11) 99999-9999\",\n  \"email\": \"contato@novaempresa.com\",\n  \"endereco\": \"Rua das Flores, 123\",\n  \"cidade\": \"São Paulo\",\n  \"estado\": \"SP\",\n  \"cep\": \"01234-567\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/empresas",
+              "host": ["{{base_url}}"],
+              "path": ["empresas"]
+            }
+          }
+        },
+        {
+          "name": "Visualizar Empresa",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/empresas/1",
+              "host": ["{{base_url}}"],
+              "path": ["empresas", "1"]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Empresa",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome_empresa\": \"Empresa Atualizada\",\n  \"telefone\": \"(11) 88888-8888\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/empresas/1",
+              "host": ["{{base_url}}"],
+              "path": ["empresas", "1"]
+            }
+          }
+        },
+        {
+          "name": "Deletar Empresa",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/empresas/1",
+              "host": ["{{base_url}}"],
+              "path": ["empresas", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Clientes",
+      "item": [
+        {
+          "name": "Listar Clientes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/clientes",
+              "host": ["{{base_url}}"],
+              "path": ["clientes"]
+            }
+          }
+        },
+        {
+          "name": "Criar Cliente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome_cliente\": \"João Silva\",\n  \"telefone\": \"(11) 99999-9999\",\n  \"email\": \"joao@email.com\",\n  \"cpf\": \"123.456.789-00\",\n  \"data_nascimento\": \"1990-01-15\",\n  \"endereco\": \"Rua A, 123\",\n  \"cidade\": \"São Paulo\",\n  \"estado\": \"SP\",\n  \"cep\": \"01234-567\",\n  \"empresa_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/clientes",
+              "host": ["{{base_url}}"],
+              "path": ["clientes"]
+            }
+          }
+        },
+        {
+          "name": "Criar ou Atualizar Cliente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome_cliente\": \"Maria Santos\",\n  \"telefone\": \"(11) 88888-8888\",\n  \"email\": \"maria@email.com\",\n  \"cpf\": \"987.654.321-00\",\n  \"empresa_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/clientes/create-or-update",
+              "host": ["{{base_url}}"],
+              "path": ["clientes", "create-or-update"]
+            }
+          }
+        },
+        {
+          "name": "Visualizar Cliente",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/clientes/1",
+              "host": ["{{base_url}}"],
+              "path": ["clientes", "1"]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Cliente",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome_cliente\": \"João Silva Atualizado\",\n  \"telefone\": \"(11) 77777-7777\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/clientes/1",
+              "host": ["{{base_url}}"],
+              "path": ["clientes", "1"]
+            }
+          }
+        },
+        {
+          "name": "Deletar Cliente",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/clientes/1",
+              "host": ["{{base_url}}"],
+              "path": ["clientes", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Funcionários",
+      "item": [
+        {
+          "name": "Listar Funcionários",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/funcionarios",
+              "host": ["{{base_url}}"],
+              "path": ["funcionarios"]
+            }
+          }
+        },
+        {
+          "name": "Criar Funcionário",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome_funcionario\": \"Carlos Oliveira\",\n  \"telefone\": \"(11) 99999-9999\",\n  \"email\": \"carlos@empresa.com\",\n  \"cargo\": \"Barbeiro\",\n  \"salario\": 2500.00,\n  \"data_admissao\": \"2024-01-15\",\n  \"empresa_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/funcionarios",
+              "host": ["{{base_url}}"],
+              "path": ["funcionarios"]
+            }
+          }
+        },
+        {
+          "name": "Visualizar Funcionário",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/funcionarios/1",
+              "host": ["{{base_url}}"],
+              "path": ["funcionarios", "1"]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Funcionário",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cargo\": \"Barbeiro Sênior\",\n  \"salario\": 3000.00\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/funcionarios/1",
+              "host": ["{{base_url}}"],
+              "path": ["funcionarios", "1"]
+            }
+          }
+        },
+        {
+          "name": "Deletar Funcionário",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/funcionarios/1",
+              "host": ["{{base_url}}"],
+              "path": ["funcionarios", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tipos de Agendamento",
+      "item": [
+        {
+          "name": "Listar Tipos de Agendamento",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/tipos-agendamento",
+              "host": ["{{base_url}}"],
+              "path": ["tipos-agendamento"]
+            }
+          }
+        },
+        {
+          "name": "Criar Tipo de Agendamento",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome_tipo\": \"Corte de Cabelo\",\n  \"descricao\": \"Corte de cabelo masculino\",\n  \"duracao_minutos\": 30,\n  \"preco\": 25.00,\n  \"empresa_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tipos-agendamento",
+              "host": ["{{base_url}}"],
+              "path": ["tipos-agendamento"]
+            }
+          }
+        },
+        {
+          "name": "Visualizar Tipo de Agendamento",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/tipos-agendamento/1",
+              "host": ["{{base_url}}"],
+              "path": ["tipos-agendamento", "1"]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Tipo de Agendamento",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"preco\": 30.00,\n  \"duracao_minutos\": 45\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tipos-agendamento/1",
+              "host": ["{{base_url}}"],
+              "path": ["tipos-agendamento", "1"]
+            }
+          }
+        },
+        {
+          "name": "Deletar Tipo de Agendamento",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/tipos-agendamento/1",
+              "host": ["{{base_url}}"],
+              "path": ["tipos-agendamento", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Agendamentos",
+      "item": [
+        {
+          "name": "Listar Agendamentos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/agendamentos",
+              "host": ["{{base_url}}"],
+              "path": ["agendamentos"]
+            }
+          }
+        },
+        {
+          "name": "Criar Agendamento",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data_agendamento\": \"2024-02-15\",\n  \"hora_agendamento\": \"14:30:00\",\n  \"status\": \"agendado\",\n  \"observacoes\": \"Cliente preferencial\",\n  \"cliente_id\": 1,\n  \"funcionario_id\": 1,\n  \"tipo_agendamento_id\": 1,\n  \"empresa_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/agendamentos",
+              "host": ["{{base_url}}"],
+              "path": ["agendamentos"]
+            }
+          }
+        },
+        {
+          "name": "Visualizar Agendamento",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/agendamentos/1",
+              "host": ["{{base_url}}"],
+              "path": ["agendamentos", "1"]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Agendamento",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"concluido\",\n  \"observacoes\": \"Serviço realizado com sucesso\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/agendamentos/1",
+              "host": ["{{base_url}}"],
+              "path": ["agendamentos", "1"]
+            }
+          }
+        },
+        {
+          "name": "Deletar Agendamento",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/agendamentos/1",
+              "host": ["{{base_url}}"],
+              "path": ["agendamentos", "1"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
